@@ -6,12 +6,12 @@ const app = express();
 
 app.use(cors());
 
-// Health check (Railway wichtig)
+// Health check
 app.get("/", (req, res) => {
     res.send("Zug API läuft 🚆");
 });
 
-// 🔍 Locations (Autocomplete)
+// 🔍 Locations
 app.get("/locations", async (req, res) => {
 
     const q = req.query.q;
@@ -24,12 +24,10 @@ app.get("/locations", async (req, res) => {
         const data = await response.json();
         res.json(data);
 
-catch (err) {
-    console.error(err);
-    res.status(500).json({
-        error: err.message
-    });
-}
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "locations API Fehler" });
+    }
 });
 
 // 🚆 Journeys
@@ -46,13 +44,11 @@ app.get("/journeys", async (req, res) => {
         res.json(data);
 
     } catch (err) {
-    console.error(err);
-    res.status(500).json({
-        error: err.message
-    });
-}
+        console.error(err);
+        res.status(500).json({ error: "journeys API Fehler" });
+    }
+});
 
-// Railway nutzt PORT automatisch
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
