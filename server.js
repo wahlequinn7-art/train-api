@@ -11,7 +11,7 @@ app.get("/", (req, res) => {
     res.send("Zug API läuft 🚆");
 });
 
-// 🔍 Locations
+// 🔍 Locations (FIXED + SAFE)
 app.get("/locations", async (req, res) => {
 
     const q = req.query.q;
@@ -21,16 +21,25 @@ app.get("/locations", async (req, res) => {
             `https://v6.db.transport.rest/locations?query=${encodeURIComponent(q)}&results=6&poi=false&addresses=false`
         );
 
-        const data = await response.json();
+        const text = await response.text();
+
+        let data;
+        try {
+            data = JSON.parse(text);
+        } catch (e) {
+            console.log("Invalid JSON from API:", text);
+            return res.status(500).json({ error: "Invalid API response" });
+        }
+
         res.json(data);
 
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: "locations API Fehler" });
+        console.error("Locations error:", err);
+        res.status(500).json({ error: err.message });
     }
 });
 
-// 🚆 Journeys
+// 🚆 Journeys (SAFE)
 app.get("/journeys", async (req, res) => {
 
     const { from, to } = req.query;
@@ -40,12 +49,21 @@ app.get("/journeys", async (req, res) => {
             `https://v6.db.transport.rest/journeys?from=${from}&to=${to}&results=5`
         );
 
-        const data = await response.json();
+        const text = await response.text();
+
+        let data;
+        try {
+            data = JSON.parse(text);
+        } catch (e) {
+            console.log("Invalid JSON from API:", text);
+            return res.status(500).json({ error: "Invalid API response" });
+        }
+
         res.json(data);
 
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: "journeys API Fehler" });
+        console.error("Journeys error:", err);
+        res.status(500).json({ error: err.message });
     }
 });
 
