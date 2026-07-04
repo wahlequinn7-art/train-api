@@ -24,9 +24,12 @@ app.get("/locations", async (req, res) => {
         const data = await response.json();
         res.json(data);
 
-    } catch (err) {
-        res.status(500).json({ error: "Fehler locations" });
-    }
+catch (err) {
+    console.error(err);
+    res.status(500).json({
+        error: err.message
+    });
+}
 });
 
 // 🚆 Journeys
@@ -43,9 +46,11 @@ app.get("/journeys", async (req, res) => {
         res.json(data);
 
     } catch (err) {
-        res.status(500).json({ error: "Fehler journeys" });
-    }
-});
+    console.error(err);
+    res.status(500).json({
+        error: err.message
+    });
+}
 
 // Railway nutzt PORT automatisch
 const PORT = process.env.PORT || 3000;
